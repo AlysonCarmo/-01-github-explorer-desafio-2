@@ -4,7 +4,7 @@ import { Button } from './components/Button';
 import { MovieCard } from './components/MovieCard';
 
 import { SideBar } from './components/SideBar';
-// import { Content } from './components/Content';
+import { Content } from './components/Content';
 
 import { api } from './services/api';
 
@@ -17,7 +17,6 @@ interface GenreResponseProps {
   id: number;
   name: 'action' | 'comedy' | 'documentary' | 'drama' | 'horror' | 'family';
   title: string;
-  handleClickButton: (id: number) => void;
 }
 
 interface MovieProps {
@@ -32,12 +31,13 @@ interface MovieProps {
 }
 
 export function App() {
+
   const [selectedGenreId, setSelectedGenreId] = useState(1);
 
   const [genres, setGenres] = useState<GenreResponseProps[]>([]);
 
-  const [movies, setMovies] = useState<MovieProps[]>([]);
   const [selectedGenre, setSelectedGenre] = useState<GenreResponseProps>({} as GenreResponseProps);
+
 
   useEffect(() => {
     api.get<GenreResponseProps[]>('genres').then(response => {
@@ -46,14 +46,16 @@ export function App() {
   }, []);
 
   useEffect(() => {
-    api.get<MovieProps[]>(`movies/?Genre_id=${selectedGenreId}`).then(response => {
-      setMovies(response.data);
+
+    api.get<GenreResponseProps[]>('genres').then(response => {
+      setGenres(response.data);
     });
 
     api.get<GenreResponseProps>(`genres/${selectedGenreId}`).then(response => {
       setSelectedGenre(response.data);
     })
   }, [selectedGenreId]);
+
 
   function handleClickButton(id: number) {
     setSelectedGenreId(id);
@@ -62,21 +64,8 @@ export function App() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'row' }}>
-      <SideBar genres={genres} handleClickButton={handleClickButton}/>
-
-      <div className="container">
-        <header>
-          <span className="category">Categoria:<span> {selectedGenre.title}</span></span>
-        </header>
-
-        <main>
-          <div className="movies-list">
-            {movies.map(movie => (
-              <MovieCard key ={movie.imdbID} title={movie.Title} poster={movie.Poster} runtime={movie.Runtime} rating={movie.Ratings[0].Value} />
-            ))}
-          </div>
-        </main>
-      </div>
+      <SideBar selectedGenreId={selectedGenreId} genres={genres} handleClickButton={handleClickButton}/>
+      <Content id={selectedGenreId} genre={selectedGenre} />
     </div>
   )
 }

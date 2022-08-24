@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { Button } from './../components/Button';
 
 import './../styles/sidebar.scss';
@@ -9,16 +8,8 @@ interface GenreResponseProps {
   
 }
 
-export function SideBar(props: {genres: GenreResponseProps[], handleClickButton:(id: number) => void}) {
+export function SideBar(props: {selectedGenreId: number, genres: GenreResponseProps[], handleClickButton:(id: number) => void}) {
 
-  const [selectedGenreId, setSelectedGenreId] = useState(1);
-
-  function handleClickButton(id: number) {
-    setSelectedGenreId(id);
-  }
-
-  console.log(typeof props) 
-  console.log(props)
    return (
    <nav className="sidebar">
    <span>Watch<p>Me</p></span>
@@ -29,7 +20,7 @@ export function SideBar(props: {genres: GenreResponseProps[], handleClickButton:
               title={genre.title}
               iconName={genre.name}
               onClick={() => props.handleClickButton(genre.id)}
-              selected={selectedGenreId === genre.id}
+              selected={props.selectedGenreId === genre.id}
             />
           ))}
         </div>
