@@ -17,6 +17,7 @@ interface GenreResponseProps {
   id: number;
   name: 'action' | 'comedy' | 'documentary' | 'drama' | 'horror' | 'family';
   title: string;
+  handleClickButton: (id: number) => void;
 }
 
 interface MovieProps {
@@ -61,7 +62,7 @@ export function App() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'row' }}>
-      <SideBar {...genres}/>
+      <SideBar genres={genres} handleClickButton={handleClickButton}/>
 
       <div className="container">
         <header>
